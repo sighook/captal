@@ -1,0 +1,20 @@
+#!/bin/sh
+
+[ "`id -u`" = 0 ] || {
+	echo "This script requires root privileges.";
+	exit 1
+}
+
+echo "Generating Self-Signed SSL Certificate"
+
+(cd /etc/captal
+openssl req \
+	-subj "/CN=captive.gateway.lan/O=CaptivePortal/OU=Networking/C=US" \
+	-new \
+	-newkey rsa:2048 \
+	-days 365 \
+	-nodes \
+	-x509 \
+	-keyout server.pem \
+	-out server.pem
+chmod 400 server.pem)

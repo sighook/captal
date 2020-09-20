@@ -1,0 +1,3 @@
+sites/
+	- Replace variables like $APTargetSSID, $APTargetMAC, $APTargetChannel
+	with corresponding values.

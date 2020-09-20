@@ -1,0 +1,52 @@
+#
+# /etc/rc.d/airbase-ng: start/stop airbase-ng Roque AP
+#
+
+. /etc/captal/airbase.conf
+
+SSD=/sbin/start-stop-daemon
+PROG=/usr/sbin/airbase-ng
+PID=/var/run/airbase-ng.pid
+OPTS="-y -e $SSID -a $MAC -c $CHANNEL $ROQUE_AP_IFACE"
+
+case $1 in
+start)
+	if ip l | grep -q at0; then ip link delete at0; fi
+	modprobe tun
+
+	$SSD --start --background --make-pidfile --pidfile $PID --exec $PROG -- $OPTS
+	sleep 2 # wait airbase-ng for create device 
+
+	ip link set at0 up
+	ip addr add 192.168.254.1 dev at0
+	ip addr add 192.168.254.2/24 dev at0
+
+	sysctl -w net.ipv6.conf.at0.disable_ipv6=1
+	;;
+
+stop)
+	$SSD --stop --remove-pidfile --retry 10 --pidfile $PID
+	;;
+
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+
+status)
+	$SSD --status --pidfile $PID
+	case $? in
+	0) echo "$PROG is running" ;;
+	1) echo "$PROG is not running but the pid file $PID exists" ;;
+	3) echo "$PROG is not running" ;;
+	4) echo "Unable to determine the program status" ;;
+	esac
+	;;
+
+*)
+	echo "usage: $0 [start|stop|restart|status]"
+	;;
+esac
+
+# End of file

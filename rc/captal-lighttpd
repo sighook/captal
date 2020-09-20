@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# /etc/rc.d/captal-lighttpd: start/stop captal's lighttpd daemon
+#
+
+SSD=/sbin/start-stop-daemon
+PROG=/usr/sbin/lighttpd
+PIDFILE=/var/run/lighttpd.pid
+OPTS="-f /etc/captal/lighttpd.conf"
+
+case $1 in
+start)
+	$SSD --start --make-pidfile --pidfile $PIDFILE --exec $PROG -- $OPTS
+	;;
+stop)
+	$SSD --stop --remove-pidfile --retry 10 --pidfile $PIDFILE
+	;;
+restart)
+	$0 stop
+	$0 start
+	;;
+status)
+	$SSD --status --pidfile $PIDFILE
+	case $? in
+	0) echo "$PROG running with pid: $(cat $PIDFILE)" ;;
+	1) echo "$PROG not running, stale pidfile: $PIDFILE" ;;
+	3) echo "$PROG not running" ;;
+	4) echo "Unable to determine program status" ;;
+	esac
+	;;
+*)
+	echo "usage: $0 [start|stop|restart|status]"
+	;;
+esac
+
+# End of file

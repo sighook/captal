@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# /etc/rc.d/captal-dhcpd: start/stop DHCP daemon
+#
+
+. /etc/captal/hostapd.conf
+
+SSD=/sbin/start-stop-daemon
+PROG=/usr/sbin/dhcpd
+PIDFILE=/var/run/dhcpd.pid
+OPTS="-cf /etc/captal/dhcpd.conf -lf /etc/captal/dhcpd.leases ${interface}"
+
+case $1 in
+start)
+	$SSD --start --pidfile $PIDFILE --exec $PROG -- $OPTS
+	;;
+stop)
+	$SSD --stop --remove-pidfile --retry 10 --pidfile $PIDFILE
+	;;
+restart)
+	$0 stop
+	$0 start
+	;;
+reload)
+	$SSD --stop --signal HUP --pidfile $PIDFILE
+	;;
+status)
+	$SSD --status --pidfile $PIDFILE
+	case $? in
+	0) echo "$PROG running with pid: $(cat $PIDFILE)" ;;
+	1) echo "$PROG not running, stale pidfile: $PIDFILE" ;;
+	3) echo "$PROG not running" ;;
+	4) echo "Unable to determine program status" ;;
+	esac
+	;;
+*)
+	echo "usage: $0 [start|stop|restart|reload|status]"
+	;;
+esac
+
+# End of file

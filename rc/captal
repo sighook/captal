@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# /etc/rc.d/captal: start/stop Captive Portal
+#
+
+case $1 in
+	start)
+		/etc/rc.d/captal-prepare   start
+		sleep 0.5
+		/etc/rc.d/captal-dhcpd     start
+		/etc/rc.d/captal-dnsserv   start
+		/etc/rc.d/captal-hostapd   start
+		/etc/rc.d/captal-lighttpd  start
+		;;
+	stop)
+		/etc/rc.d/captal-lighttpd  stop
+		/etc/rc.d/captal-hostapd   stop
+		/etc/rc.d/captal-dnsserv   stop
+		/etc/rc.d/captal-dhcpd     stop
+		/etc/rc.d/captal-prepare   stop
+		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
+	status)
+		echo -n "captal-prepare  : "; /etc/rc.d/captal-prepare   status
+		echo -n "captal-dhcpd    : "; /etc/rc.d/captal-dhcpd     status
+		echo -n "captal-dnsserv  : "; /etc/rc.d/captal-dnsserv   status
+		echo -n "captal-hostapd  : "; /etc/rc.d/captal-hostapd   status
+		echo -n "captal-lighttpd : "; /etc/rc.d/captal-lighttpd  status
+		echo
+		;;
+	*)
+		echo "Usage: $0 [start|stop|restart|status]"
+		;;
+esac
+
+# End of file

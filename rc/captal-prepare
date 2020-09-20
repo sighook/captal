@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# /etc/rc.d/captal-prepare: start/stop captal network interface
+#
+
+. /etc/captal/hostapd.conf
+
+case $1 in
+start)
+	/sbin/ip addr add 192.168.254.1/24 dev ${interface}
+	/sbin/ip link set ${interface} up
+
+	cat /proc/sys/net/ipv4/ip_forward > /tmp/captal-ip_forward.backup
+	/sbin/sysctl -w net.ipv4.ip_forward=1
+
+	/usr/sbin/iptables-save > /tmp/captal-iptables.backup
+	/usr/sbin/iptables --flush
+	/usr/sbin/iptables --table nat --flush
+	/usr/sbin/iptables --delete-chain
+	/usr/sbin/iptables -P FORWARD ACCEPT
+	/usr/sbin/iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT \
+		--to-destination 192.168.254.1:80
+	/usr/sbin/iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT \
+		--to-destination 192.168.254.1:443
+	/usr/sbin/iptables -t nat -A POSTROUTING -j MASQUERADE
+	;;
+stop)
+	/usr/sbin/iptables --flush
+	/usr/sbin/iptables --table nat --flush
+	/usr/sbin/iptables --delete-chain
+	/usr/sbin/iptables --table nat --delete-chain
+	/usr/sbin/iptables-restore < /tmp/captal-iptables.backup
+
+	if [ -f /tmp/captal-ip_forward.backup ]; then
+		/sbin/sysctl -w net.ipv4.ip_forward=`cat /tmp/captal-ip_forward.backup`
+	fi
+
+	/sbin/ip addr del 192.168.254.1/24 dev ${interface}
+	/sbin/ip link set ${interface} down
+	;;
+status)
+	if /sbin/ip addr show ${interface} | grep -q "192.168.254.1/24"; then
+		echo "interface ${interface} prepared"
+	else
+		echo "interface ${interface} not prepared"
+	fi
+	;;
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+*)
+	echo "Usage: $0 [start|stop|status|restart]"
+	;;
+esac
+
+# End of file

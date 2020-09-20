@@ -1,0 +1,92 @@
+#!/usr/bin/perl
+# This file is a part of captal program.
+# See LICENSE file for copyright and license details.
+
+use strict;
+use warnings;
+
+use File::Basename;
+use Getopt::Std;
+use Net::DNS::Nameserver;
+use Sys::Syslog;
+
+sub reply_handler;
+
+my $program = basename $0;
+my $version = "0.1";
+my $help    = <<"EOH";
+Usage: $program [OPTIONS...]
+Version: $version
+
+Options:
+  -h         Print this help and exit
+  -v         Print version and exit
+  -a ADDR    Bind ip address
+  -p NUM     Bind port number
+EOH
+
+use vars qw($opt_h $opt_v $opt_a $opt_p);
+getopts('a:p:hv') or die "$program: Invalid command line args!\n";
+$opt_a //= "192.168.254.1";
+$opt_p //= 53;
+
+print "$help\n" and exit if $opt_h;
+print "$version\n" and exit if $opt_v;
+
+if ($opt_p && $opt_p < 1024 && $> != 0) {
+    die "ERROR: Starting at $opt_a:$opt_p requires root privileges!\n";
+}
+
+my $ns = Net::DNS::Nameserver->new(
+    LocalAddr    => $opt_a,
+    LocalPort    => $opt_p,
+    ReplyHandler => \&reply_handler,
+    Verbose      => 1
+    ) || die "$program: Couldn't create nameserver object!\n";
+
+openlog($program, 'cons,pid', 'user');
+syslog('info', "Starting at $opt_a:$opt_p\n");
+
+# Catch and handle SIGINT
+$SIG{INT} = sub {
+    syslog('info', "Stopping $opt_a:$opt_p, bye\n");
+    closelog() and exit;
+};
+
+$ns->main_loop;
+
+sub reply_handler {
+    my ($qname, $qclass, $qtype, $peerhost, $query, $conn) = @_;
+    my ($rcode, @ans, @auth, @add);
+
+    syslog('info', "Received query from $peerhost to $conn->{sockhost}\n");
+    print "Received query from $peerhost to " . $conn->{sockhost} . "\n";
+    $query->print;
+
+    my ($ttl, $rdata) = (3600, "192.168.254.1");
+    my $rr = Net::DNS::RR->new("$qname $ttl $qclass $qtype $rdata");
+    push @ans, $rr;
+    $rcode = "NOERROR";
+
+    #if ($qtype eq "A" && $qname eq "foo.example.com") {
+    #        my ($ttl, $rdata) = (3600, "10.1.2.3");
+    #        my $rr = new Net::DNS::RR("$qname $ttl $qclass $qtype $rdata");
+    #        push @ans, $rr;
+    #        $rcode = "NOERROR";
+    #} elsif ($qname eq "foo.example.com") {
+    #        $rcode = "NOERROR";
+    #} else {
+    #        $rcode = "NXDOMAIN";
+    #}
+
+    # mark the answer as authoritative (by setting the 'aa' flag)
+    my $headermask = {aa => 1};
+
+    # specify EDNS options  { option => value }
+    my $optionmask = {};
+
+    return ($rcode, \@ans, \@auth, \@add, $headermask, $optionmask);
+}
+
+# vim:sw=4:ts=4:sts=4:et:cc=80
+# End of file

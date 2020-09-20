@@ -1,0 +1,98 @@
+#!/usr/bin/perl
+# This file is a part of captal program.
+# See LICENSE file for copyright and license details.
+
+use strict;
+use warnings;
+use autodie;
+
+use Sys::Syslog;
+use Data::Dumper;
+use File::Temp;
+use File::Basename;
+
+sub read_config (_);
+sub cowpatty    ($$$);
+sub aircrack    ($$$);
+
+my $program  = basename $0;
+my $password = shift;
+my $checktool;
+my $capfile;
+my $ssid;
+
+die "usage: $program <password>\n" unless $password;
+
+read_config '/etc/captal/chkwpa.conf';
+
+openlog($program, 'cons,pid', 'user');
+syslog 'err', 'missing the CHECK_TOOL declared'   unless    $checktool;
+syslog 'err', 'missing the CAP_FILE declared'     unless    $capfile;
+syslog 'err', 'missing the SSID declared'         unless    $ssid;
+syslog 'err', "$capfile doesn't exists"           unless -f $capfile;
+
+syslog 'info', "trying $ssid:$password on $capfile";
+
+my $fh = File::Temp->new;
+print $fh "$password\n";
+close $fh;
+
+no strict 'refs';
+my $rc = $checktool->($capfile, $fh->filename, $ssid);
+
+closelog();
+exit($rc);
+
+sub read_config (_) {
+    my $conf = shift;
+
+    open(my $fd, $conf);
+    while (<$fd>) {
+        $checktool = $1 if /^CHECK_TOOL=(.*)$/;
+        $capfile   = $1 if /^CAP_FILE=(.*)$/;
+        $ssid      = $1 if /^(?:ssid|SSID)=(.*)$/;
+    }
+}
+
+sub cowpatty ($$$) {
+    my ($capfile, $pwdfile, $ssid) = @_;
+    local $_ = qx(cowpatty -s $ssid -f $pwdfile -r $capfile);
+
+    if (/The PSK is "(?<password>.*?)"\./s) {
+        syslog('info|mail', "password for the $ssid is '$+{password}'\n");
+        return 2;
+    } else {
+        syslog('info', "incorrect password");
+        return 0;
+    }
+}
+
+sub aircrack ($$$) {
+    my ($capfile, $pwdfile, $ssid) = @_;
+    local $_ = qx(aircrack-ng -e $ssid -w $pwdfile $capfile);
+
+    if (/KEY FOUND! \[ (?<password>.*?) \]/s) {
+        syslog('info', "password for the $ssid is '$+{password}'\n");
+        syslog('notice|mail', "password for the $ssid is '$+{password}'\n");
+        return 2;
+    }
+    elsif (/Passphrase not in/s) {
+        syslog('info', "incorrect password");
+        return 0;
+    }
+    elsif (/KEY NOT FOUND/s) {
+        syslog('info', "incorrect password");
+        return 0;
+    }
+    else {
+        syslog('err',
+            "Unknown aircrack-ng response: check /tmp/captal-chkpwd-$ssid.log");
+        open my $fd, ">> /tmp/captal-chkpwd-$ssid.log";
+        print $fd $_;
+        close $fd;
+        return -1;
+    }
+}
+
+# vim:sw=4:ts=4:sts=4:et:cc=80
+# End of file
