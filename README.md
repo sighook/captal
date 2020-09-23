@@ -6,7 +6,7 @@
 captal is a security auditing and social-engineering research project.
 
 The main goal is to provide the modular constructor for MITM-Phising attacks.
-See EXAMPLES for usage.
+See [examples](https://github.com/chinarulezzz/captal/#examples) for usage.
 
 ### dependencies
 
@@ -56,7 +56,7 @@ See EXAMPLES for usage.
 
 ### examples
 
-TODO
+- [Evil Twin MITM Phishing](https://github.com/chinarulezzz/captal/blob/master/doc/EvilTwin_MITM_Phishing.md)
 
 ---
 
