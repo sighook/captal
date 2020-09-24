@@ -1,11 +1,11 @@
 # captal
-(Wireless) (RogueAP) (MITM) (Phising) attack framework
+(Wireless) (RogueAP) (MITM) (Phishing) attack framework
 
 ### about
 
 captal is a security auditing and social-engineering research project.
 
-The main goal is to provide the modular constructor for MITM-Phising attacks.
+The main goal is to provide the modular constructor for MITM-Phishing attacks.
 See [examples](https://github.com/chinarulezzz/captal/#examples) for usage.
 
 ### dependencies
@@ -37,9 +37,9 @@ See [examples](https://github.com/chinarulezzz/captal/#examples) for usage.
 
 #### utils
 
-- /usr/bin/captal-chkwpa: check phished WPA/WPA2 password agains sniffed CAP-file
-- /usr/bin/captal-dnsserver: simple and extendable DNS server
-- /usr/bin/captal-gencert: generate self-signed certificate for Captive Portal
+- /usr/bin/captal-chkwpa: check phished wpa/wpa2 password against sniffed handshakes
+- /usr/bin/captal-dnsserver: simple and extendable dns server
+- /usr/bin/captal-gencert: generate self-signed certificate for phishing site
 
 #### logs
 
