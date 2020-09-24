@@ -14,6 +14,7 @@ See [examples](https://github.com/chinarulezzz/captal/#examples) for usage.
 - isc-dhcp-server
 - perl-net-dns (and perl itself)
 - hostapd
+- php-cgi
 
 ---
 
