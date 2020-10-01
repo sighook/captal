@@ -61,6 +61,14 @@ See [examples](https://github.com/chinarulezzz/captal/#examples) for usage.
 
 ---
 
+### HUGE THANKS
+
+- Fluxion Project: [](https://github.com/FluxionNetwork/fluxion)
+
+- AdvPhising Project: [](https://github.com/Ignitetch/AdvPhishing)
+
+---
+
 ### LEGAL DISCLAIMER
 
 The author does not hold any responsibility for the bad use of this tool,
