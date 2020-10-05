@@ -18,7 +18,7 @@
 	if(!empty($candidate_key)){
 		$remote = $_SERVER["REMOTE_ADDR"];
 		syslog(LOG_NOTICE, "$remote trying to authenticate with '$candidate_key'");
-		exec("/usr/bin/captal-chkpwd '$candidate_key'", $output, $candidate_key_result);
+		exec("/usr/bin/captal-chkwpa '$candidate_key'", $output, $candidate_key_result);
 		if($candidate_key_result == 2)
 			syslog(LOG_NOTICE, "$remote authenticated succesfully");
 	}
