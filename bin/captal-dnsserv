@@ -11,9 +11,10 @@ use Net::DNS::Nameserver;
 use Sys::Syslog;
 
 sub reply_handler;
+sub read_config;
 
 my $program = basename $0;
-my $version = "0.1";
+my $version = '0.2';
 my $help    = <<"EOH";
 Usage: $program [OPTIONS...]
 Version: $version
@@ -21,20 +22,41 @@ Version: $version
 Options:
   -h         Print this help and exit
   -v         Print version and exit
-  -a ADDR    Bind ip address
-  -p NUM     Bind port number
+  -a ADDR    Bind ip address                 (default: 192.168.254.1)
+  -p NUM     Bind port number                (default: 53)
+  -R ADDR    Return ADDR as default host IP  (default: 192.168.254.1)
+  -H FILE    Path to the additional HOSTS file
+
+FILE:
+  The <hostnames> file should contain one IP and hostname pair per line,
+  separated by whitespace, in the following format:
+
+  10.6.6.6      foo.example.com
+  10.6.6.6      bar.example.com
+  192.168.66.6  www.cs.stonybrook.edu
+
+  Note: If none of these hostnames matched the Request, return the IP
+        specified by -R option (or its default if no specified).
+
 EOH
 
-use vars qw($opt_h $opt_v $opt_a $opt_p);
-getopts('a:p:hv') or die "$program: Invalid command line args!\n";
-$opt_a //= "192.168.254.1";
+use vars qw($opt_h $opt_v $opt_a $opt_p $opt_R $opt_H %HOST);
+getopts('a:p:R:H:hv') or die "$program: Invalid command line args!\n";
+$opt_a //= '192.168.254.1';
 $opt_p //= 53;
+$opt_R //= '192.168.254.1';
 
 print "$help\n" and exit if $opt_h;
 print "$version\n" and exit if $opt_v;
 
 if ($opt_p && $opt_p < 1024 && $> != 0) {
     die "ERROR: Starting at $opt_a:$opt_p requires root privileges!\n";
+}
+
+if ($opt_H) {
+    die  "$program: The file '$opt_H' missing!\n"  unless -f $opt_H;
+    warn "$program: The file '$opt_H' is empty.\n" unless -s $opt_H;
+    read_config;
 }
 
 my $ns = Net::DNS::Nameserver->new(
@@ -55,6 +77,17 @@ $SIG{INT} = sub {
 
 $ns->main_loop;
 
+sub read_config {
+    open(my $fd, $opt_H);
+    while (<$fd>) {
+        next if /^#/ or !length;
+        chomp;
+        my ($addr, $name) = split /\s+/;
+        $HOST{$name} = $addr;
+    }
+    close $fd;
+}
+
 sub reply_handler {
     my ($qname, $qclass, $qtype, $peerhost, $query, $conn) = @_;
     my ($rcode, @ans, @auth, @add);
@@ -63,7 +96,8 @@ sub reply_handler {
     print "Received query from $peerhost to " . $conn->{sockhost} . "\n";
     $query->print;
 
-    my ($ttl, $rdata) = (3600, "192.168.254.1");
+    my $ttl = 3600;
+    my $rdata = exists $HOST{$qname} ? $HOST{$qname} : $opt_R;
     my $rr = Net::DNS::RR->new("$qname $ttl $qclass $qtype $rdata");
     push @ans, $rr;
     $rcode = "NOERROR";
