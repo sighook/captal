@@ -1,34 +1,35 @@
 #!/bin/sh
 #
-# /etc/rc.d/captal-dhcpd: start/stop DHCP daemon
+# @RCDIR@/captal-dhcpd: start/stop DHCP daemon
 #
 
-. /etc/captal/hostapd.conf
+. @ETCDIR@/captal/hostapd.conf
 
 SSD=/sbin/start-stop-daemon
 PROG=/usr/sbin/dhcpd
-PIDFILE=/var/run/dhcpd.pid
-OPTS="-cf /etc/captal/dhcpd.conf -lf /etc/captal/dhcpd.leases ${interface}"
+PID=/run/captal-dhcpd.pid
+OPTS="-cf @ETCDIR@/captal/dhcpd.conf -lf @ETCDIR@/captal/dhcpd.leases \
+${interface}"
 
 case $1 in
 start)
-	$SSD --start --pidfile $PIDFILE --exec $PROG -- $OPTS
+	$SSD --start --pidfile $PID --exec $PROG -- $OPTS
 	;;
 stop)
-	$SSD --stop --remove-pidfile --retry 10 --pidfile $PIDFILE
+	$SSD --stop --remove-pidfile --retry 10 --pidfile $PID
 	;;
 restart)
 	$0 stop
 	$0 start
 	;;
 reload)
-	$SSD --stop --signal HUP --pidfile $PIDFILE
+	$SSD --stop --signal HUP --pidfile $PID
 	;;
 status)
-	$SSD --status --pidfile $PIDFILE
+	$SSD --status --pidfile $PID
 	case $? in
-	0) echo "$PROG running with pid: $(cat $PIDFILE)" ;;
-	1) echo "$PROG not running, stale pidfile: $PIDFILE" ;;
+	0) echo "$PROG running with pid: $(cat $PID)" ;;
+	1) echo "$PROG not running, stale pidfile: $PID" ;;
 	3) echo "$PROG not running" ;;
 	4) echo "Unable to determine program status" ;;
 	esac
@@ -38,4 +39,5 @@ status)
 	;;
 esac
 
-# End of file
+# vim:cc=72:tw=70
+# End of file.
