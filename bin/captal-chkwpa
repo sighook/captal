@@ -50,7 +50,7 @@ sub read_config (_) {
     while (<$fd>) {
         $checktool = $1 if /^CHECK_TOOL=(.*)$/;
         $capfile   = $1 if /^CAP_FILE=(.*)$/;
-        $ssid      = $1 if /^(?:ssid|SSID)=(.*)$/;
+        $ssid      = $1 if /^SSID=(.*)$/i;
     }
 }
 
