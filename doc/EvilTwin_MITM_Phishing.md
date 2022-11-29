@@ -29,11 +29,15 @@ b) Deauthenticate all stations:
 sudo aireplay -0 5 -a $BSSID
 ```
 
-Since the `output-01.cap` has the handshake, we can configure the captal now!
+Since the `output-01.cap` has the handshake, we can configure the
+captal now!
 
 ---
 
 ### Configure captal
+
+The following configuration assumes that the **captal** have been
+installed with `PREFIX=/usr` instead of default `PREFIX=/usr/local`.
 
 ##### Edit `/etc/captal/chkwpa.conf`
 
@@ -83,3 +87,6 @@ b) Deauthenticate all stations:
 ```sh
 sudo aireplay -0 0 -a $BSSID
 ```
+
+<!-- vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+End of file. -->
