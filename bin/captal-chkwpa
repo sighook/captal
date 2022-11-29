@@ -23,7 +23,7 @@ my $ssid;
 
 die "usage: $program <password>\n" unless $password;
 
-read_config '/etc/captal/chkwpa.conf';
+read_config '@ETCDIR@/captal/chkwpa.conf';
 
 openlog($program, 'cons,pid', 'user');
 syslog 'err', 'missing the CHECK_TOOL declared'   unless    $checktool;
