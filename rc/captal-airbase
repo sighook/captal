@@ -1,12 +1,12 @@
 #
-# /etc/rc.d/airbase-ng: start/stop airbase-ng Roque AP
+# @ETCDIR@/rc.d/airbase-ng: start/stop airbase-ng Roque AP
 #
 
 . @ETCDIR@/captal/airbase.conf
 
 SSD=/sbin/start-stop-daemon
 PROG=/usr/sbin/airbase-ng
-PID=/run/airbase-ng.pid
+PID=/run/captal-airbase-ng.pid
 OPTS="-y -e $SSID -a $MAC -c $CHANNEL $ROQUE_AP_IFACE"
 
 case $1 in
