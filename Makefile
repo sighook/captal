@@ -1,6 +1,9 @@
 # This file is part of captal.
 # See LICENSE file for copyright and license details.
 
+# captal version
+VERSION = 0.1
+
 # paths
 PREFIX = /usr/local
 BINDIR = ${PREFIX}/bin
@@ -8,6 +11,7 @@ ETCDIR = /etc
 RCDIR  = /etc/rc.d
 WWWDIR = /var/www
 
+######################################################################
 
 HELPERS = $(subst .in,,$(wildcard helpers/*.in))
 CONFIGS = $(subst .in,,$(wildcard configs/*.in))
