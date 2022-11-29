@@ -1,5 +1,5 @@
 From 443614f91092ef713eb2dd37706c519427c7b120 Mon Sep 17 00:00:00 2001
-From: chinarulezzz <drop@chinarulezzz.fun>
+From: Alexandr Savca <alexandr.savca89@gmail.com>
 Date: Thu, 5 Mar 2020 01:26:31 +0200
 Subject: [PATCH] airodump-ng.c: add manufacturer column to the client list
 
