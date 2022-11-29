@@ -24,38 +24,38 @@ See [examples](https://github.com/sighook/captal/#examples) for usage.
 
 #### configs
 
-- /etc/captal/chkwpa.conf: captal-chkwpa tool configuration
-- /etc/captal/dhcpd.conf: dhcp server configuration
-- /etc/captal/hostapd.conf: rogue AP configuration
-- /etc/captal/lighttpd.conf: phishing server configuration
+- `@ETCDIR@/captal/chkwpa.conf`: captal-chkwpa tool configuration
+- `@ETCDIR@/captal/dhcpd.conf`: dhcp server configuration
+- `@ETCDIR@/captal/hostapd.conf`: rogue AP configuration
+- `@ETCDIR@/captal/lighttpd.conf`: phishing server configuration
 
 #### rc (services)
 
-- /etc/rc.d/captal: start/stop all captal services in correct order
-- /etc/rc.d/captal-prepare: prepare rogue AP interface
-- /etc/rc.d/captal-hostapd: start/stop rogue AP server
-- /etc/rc.d/captal-dhcpd: start/stop dhcp server
-- /etc/rc.d/captal-dnsserv: start/stop dns server
-- /etc/rc.d/captal-lighttpd: start/stop phishing server
+- `@RCDIR@/captal`: start/stop all captal services in correct order
+- `@RCDIR@/captal-prepare`: prepare rogue AP interface
+- `@RCDIR@/captal-hostapd`: start/stop rogue AP server
+- `@RCDIR@/captal-dhcpd`: start/stop dhcp server
+- `@RCDIR@/captal-dnsserv`: start/stop dns server
+- `@RCDIR@/captal-lighttpd`: start/stop phishing server
 
 #### utils
 
-- /usr/bin/captal-chkwpa: check phished wpa/wpa2 password against
+- `@BINDIR@/captal-chkwpa`: check phished wpa/wpa2 password against
 sniffed handshakes
-- /usr/bin/captal-dnsserver: simple and extendable dns server
-- /usr/bin/captal-gencert: generate self-signed certificate for
+- `@BINDIR@/captal-dnsserver`: simple and extendable dns server
+- `@BINDIR@/captal-gencert`: generate self-signed certificate for
 phishing site
 
 #### logs
 
-- /var/log/messages: dhpcd, captal-dnsserv (info), hostapd, lighttpd
-- /var/log/lighttpd.log: lighttpd
-- /var/log/captal-dnsserv.log: captal-dnsserv (verbose)
-- /var/log/mail: captal-chkwpa successful phished password
+- `/var/log/messages`: dhpcd, captal-dnsserv (info), hostapd, lighttpd
+- `/var/log/lighttpd.log`: lighttpd
+- `/var/log/captal-dnsserv.log`: captal-dnsserv (verbose)
+- `/var/log/mail`: captal-chkwpa successful phished password
 
 #### phishing portals
 
-- /var/www/captal/sites ([screenshots](https://github.com/sighook/captal/blob/master/PORTALS.md))
+- `@WWWDIR@/captal/sites`([screenshots](https://github.com/sighook/captal/blob/master/doc/PortalsPreview.md))
 
 ---
 
