@@ -1,34 +1,31 @@
 #!/bin/sh
 #
-# /etc/rc.d/captal-dnsserv: start/stop Roque AP DNS Server
+# @RCDIR@/captal-dnsserv: start/stop Roque AP DNS Server
 #
 
 SSD=/sbin/start-stop-daemon
 PROG=/usr/bin/captal-dnsserv
-PIDFILE=/var/run/captal-dnsserv.pid
-LOGFILE=/var/log/captal-dnsserv.log
+PID=/run/captal-dnsserv.pid
+LOG=/var/log/captal-dnsserv.log
 OPTS=
 
 case $1 in
 start)
-	$SSD --start \
-		--background \
-		--make-pidfile \
-		--pidfile $PIDFILE \
-		--exec $PROG -- $OPTS >> $LOGFILE 2>&1
+	$SSD --start --background --make-pidfile --pidfile $PID \
+		--exec $PROG -- $OPTS >> $LOG 2>&1
 	;;
 stop)
-	$SSD --stop --remove-pidfile --retry 10 --pidfile $PIDFILE
+	$SSD --stop --remove-pidfile --retry 10 --pidfile $PID
 	;;
 restart)
 	$0 stop
 	$0 start
 	;;
 status)
-	$SSD --status --pidfile $PIDFILE
+	$SSD --status --pidfile $PID
 	case $? in
-	0) echo "$PROG running with pid: $(cat $PIDFILE)" ;;
-	1) echo "$PROG not running, stale pidfile: $PIDFILE" ;;
+	0) echo "$PROG running with pid: $(cat $PID)" ;;
+	1) echo "$PROG not running, stale pidfile: $PID" ;;
 	3) echo "$PROG not running" ;;
 	4) echo "Unable to determine program status" ;;
 	esac
@@ -38,4 +35,5 @@ status)
 	;;
 esac
 
-# End of file
+# vim:cc=72:tw=70
+# End of file.
