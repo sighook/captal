@@ -2,19 +2,22 @@
 # /etc/rc.d/airbase-ng: start/stop airbase-ng Roque AP
 #
 
-. /etc/captal/airbase.conf
+. @ETCDIR@/captal/airbase.conf
 
 SSD=/sbin/start-stop-daemon
 PROG=/usr/sbin/airbase-ng
-PID=/var/run/airbase-ng.pid
+PID=/run/airbase-ng.pid
 OPTS="-y -e $SSID -a $MAC -c $CHANNEL $ROQUE_AP_IFACE"
 
 case $1 in
 start)
-	if ip l | grep -q at0; then ip link delete at0; fi
+	if ip l | grep -q at0; then
+		ip link delete at0
+	fi
 	modprobe tun
 
-	$SSD --start --background --make-pidfile --pidfile $PID --exec $PROG -- $OPTS
+	$SSD --start --background --make-pidfile --pidfile $PID \
+		--exec $PROG -- $OPTS
 	sleep 2 # wait airbase-ng for create device 
 
 	ip link set at0 up
@@ -49,4 +52,5 @@ status)
 	;;
 esac
 
-# End of file
+# vim:ft=sh:cc=72:tw=70
+# End of file.
