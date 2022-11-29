@@ -22,7 +22,7 @@ all: ${HELPERS} ${CONFIGS} ${RCS}
 	    -e "s|@WWWDIR@|${WWWDIR}|g" \
 	    $<  >  $@
 
-install:
+install: all
 	install -m 0755 -Dt ${DESTDIR}${BINDIR}/        ${HELPERS}
 	install -m 0644 -Dt ${DESTDIR}${ETCDIR}/captal  ${CONFIGS}
 	install -m 0755 -Dt ${DESTDIR}${RCDIR}/         ${RCS}
