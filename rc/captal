@@ -1,39 +1,40 @@
 #!/bin/sh
 #
-# /etc/rc.d/captal: start/stop Captive Portal
+# @RCDIR@/captal: start/stop Captive Portal
 #
 
 case $1 in
-	start)
-		/etc/rc.d/captal-prepare   start
-		sleep 0.5
-		/etc/rc.d/captal-dhcpd     start
-		/etc/rc.d/captal-dnsserv   start
-		/etc/rc.d/captal-hostapd   start
-		/etc/rc.d/captal-lighttpd  start
-		;;
-	stop)
-		/etc/rc.d/captal-lighttpd  stop
-		/etc/rc.d/captal-hostapd   stop
-		/etc/rc.d/captal-dnsserv   stop
-		/etc/rc.d/captal-dhcpd     stop
-		/etc/rc.d/captal-prepare   stop
-		;;
-	restart)
-		$0 stop
-		$0 start
-		;;
-	status)
-		echo -n "captal-prepare  : "; /etc/rc.d/captal-prepare   status
-		echo -n "captal-dhcpd    : "; /etc/rc.d/captal-dhcpd     status
-		echo -n "captal-dnsserv  : "; /etc/rc.d/captal-dnsserv   status
-		echo -n "captal-hostapd  : "; /etc/rc.d/captal-hostapd   status
-		echo -n "captal-lighttpd : "; /etc/rc.d/captal-lighttpd  status
-		echo
-		;;
-	*)
-		echo "Usage: $0 [start|stop|restart|status]"
-		;;
+start)
+	@RCDIR@/captal-prepare   start
+	sleep 0.5
+	@RCDIR@/captal-dhcpd     start
+	@RCDIR@/captal-dnsserv   start
+	@RCDIR@/captal-hostapd   start
+	@RCDIR@/captal-lighttpd  start
+	;;
+stop)
+	@RCDIR@/captal-lighttpd  stop
+	@RCDIR@/captal-hostapd   stop
+	@RCDIR@/captal-dnsserv   stop
+	@RCDIR@/captal-dhcpd     stop
+	@RCDIR@/captal-prepare   stop
+	;;
+restart)
+	$0 stop
+	$0 start
+	;;
+status)
+	echo -n "captal-prepare  : " ; @RCDIR@/captal-prepare   status
+	echo -n "captal-dhcpd    : " ; @RCDIR@/captal-dhcpd     status
+	echo -n "captal-dnsserv  : " ; @RCDIR@/captal-dnsserv   status
+	echo -n "captal-hostapd  : " ; @RCDIR@/captal-hostapd   status
+	echo -n "captal-lighttpd : " ; @RCDIR@/captal-lighttpd  status
+	echo
+	;;
+*)
+	echo "Usage: $0 [start|stop|restart|status]"
+	;;
 esac
 
-# End of file
+# vim:ft=sh:cc=72:tw=70
+# End of file.
