@@ -1,9 +1,9 @@
 #!/bin/sh
 #
-# /etc/rc.d/captal-prepare: start/stop captal network interface
+# @RCDIR@/captal-prepare: start/stop captal network interface
 #
 
-. /etc/captal/hostapd.conf
+. @ETCDIR@/captal/hostapd.conf
 
 case $1 in
 start)
@@ -18,10 +18,10 @@ start)
 	/usr/sbin/iptables --table nat --flush
 	/usr/sbin/iptables --delete-chain
 	/usr/sbin/iptables -P FORWARD ACCEPT
-	/usr/sbin/iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT \
-		--to-destination 192.168.254.1:80
-	/usr/sbin/iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT \
-		--to-destination 192.168.254.1:443
+	/usr/sbin/iptables -t nat -A PREROUTING -p tcp --dport 80  \
+		-j DNAT --to-destination 192.168.254.1:80
+	/usr/sbin/iptables -t nat -A PREROUTING -p tcp --dport 443 \
+		-j DNAT --to-destination 192.168.254.1:443
 	/usr/sbin/iptables -t nat -A POSTROUTING -j MASQUERADE
 	;;
 stop)
@@ -32,7 +32,7 @@ stop)
 	/usr/sbin/iptables-restore < /tmp/captal-iptables.backup
 
 	if [ -f /tmp/captal-ip_forward.backup ]; then
-		/sbin/sysctl -w net.ipv4.ip_forward=`cat /tmp/captal-ip_forward.backup`
+		/sbin/sysctl -w net.ipv4.ip_forward=$(cat /tmp/captal-ip_forward.backup)
 	fi
 
 	/sbin/ip addr del 192.168.254.1/24 dev ${interface}
@@ -55,4 +55,5 @@ restart)
 	;;
 esac
 
-# End of file
+# vim:cc=72:tw=70
+# End of file.
