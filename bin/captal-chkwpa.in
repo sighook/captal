@@ -26,10 +26,10 @@ die "usage: $program <password>\n" unless $password;
 read_config '@ETCDIR@/captal/chkwpa.conf';
 
 openlog($program, 'cons,pid', 'user');
-syslog 'err', 'missing the CHECK_TOOL declared'   unless    $checktool;
-syslog 'err', 'missing the CAP_FILE declared'     unless    $capfile;
-syslog 'err', 'missing the SSID declared'         unless    $ssid;
-syslog 'err', "$capfile doesn't exists"           unless -f $capfile;
+syslog('err', 'missing the CHECK_TOOL declared') unless    $checktool;
+syslog('err', 'missing the CAP_FILE declared')   unless    $capfile;
+syslog('err', 'missing the SSID declared')       unless    $ssid;
+syslog('err', "$capfile doesn't exists")         unless -f $capfile;
 
 syslog 'info', "trying $ssid:$password on $capfile";
 
@@ -59,7 +59,8 @@ sub cowpatty ($$$) {
     local $_ = qx(cowpatty -s $ssid -f $pwdfile -r $capfile);
 
     if (/The PSK is "(?<password>.*?)"\./s) {
-        syslog('info|mail', "password for the $ssid is '$+{password}'\n");
+        syslog('info|mail',
+            "password for the $ssid is '$+{password}'\n");
         return 2;
     } else {
         syslog('info', "incorrect password");
@@ -72,8 +73,10 @@ sub aircrack ($$$) {
     local $_ = qx(aircrack-ng -e $ssid -w $pwdfile $capfile);
 
     if (/KEY FOUND! \[ (?<password>.*?) \]/s) {
-        syslog('info', "password for the $ssid is '$+{password}'\n");
-        syslog('notice|mail', "password for the $ssid is '$+{password}'\n");
+        syslog('info',
+            "password for the $ssid is '$+{password}'\n");
+        syslog('notice|mail',
+            "password for the $ssid is '$+{password}'\n");
         return 2;
     }
     elsif (/Passphrase not in/s) {
@@ -86,7 +89,8 @@ sub aircrack ($$$) {
     }
     else {
         syslog('err',
-            "Unknown aircrack-ng response: check /tmp/captal-chkpwd-$ssid.log");
+            "Unknown aircrack-ng response: "
+            . "check /tmp/captal-chkpwd-$ssid.log");
         open my $fd, ">> /tmp/captal-chkpwd-$ssid.log";
         print $fd $_;
         close $fd;
@@ -94,5 +98,5 @@ sub aircrack ($$$) {
     }
 }
 
-# vim:sw=4:ts=4:sts=4:et:cc=80
+# vim:sw=4:ts=4:sts=4:et:cc=72:tw=70
 # End of file.

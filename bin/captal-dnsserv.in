@@ -64,12 +64,12 @@ my $ns = Net::DNS::Nameserver->new(
     LocalPort    => $opt_p,
     ReplyHandler => \&reply_handler,
     Verbose      => 1
-    ) or die "$program: Couldn't create nameserver object!\n";
+) or die "$program: Couldn't create nameserver object!\n";
 
 openlog($program, 'cons,pid', 'user');
 syslog('info', "Starting at $opt_a:$opt_p\n");
 
-# Catch and handle SIGINT
+# Catch and handle SIGINT.
 $SIG{INT} = sub {
     syslog('info', "Stopping $opt_a:$opt_p, bye\n");
     closelog() and exit;
@@ -92,8 +92,10 @@ sub reply_handler {
     my ($qname, $qclass, $qtype, $peerhost, $query, $conn) = @_;
     my ($rcode, @ans, @auth, @add);
 
-    syslog('info', "Received query from $peerhost to $conn->{sockhost}\n");
-    print "Received query from $peerhost to " . $conn->{sockhost} . "\n";
+    syslog('info',
+        "Received query from $peerhost to $conn->{sockhost}\n");
+    print "Received query from $peerhost to "
+        . $conn->{sockhost} . "\n";
     $query->print;
 
     my $ttl = 3600;
@@ -103,14 +105,14 @@ sub reply_handler {
     $rcode = "NOERROR";
 
     #if ($qtype eq "A" && $qname eq "foo.example.com") {
-    #        my ($ttl, $rdata) = (3600, "10.1.2.3");
-    #        my $rr = new Net::DNS::RR("$qname $ttl $qclass $qtype $rdata");
-    #        push @ans, $rr;
-    #        $rcode = "NOERROR";
+    #    my ($ttl, $rdata) = (3600, "10.1.2.3");
+    #    my $rr = Net::DNS::RR->new("$qname $ttl $qclass $qtype $rdata");
+    #    push @ans, $rr;
+    #    $rcode = "NOERROR";
     #} elsif ($qname eq "foo.example.com") {
-    #        $rcode = "NOERROR";
+    #    $rcode = "NOERROR";
     #} else {
-    #        $rcode = "NXDOMAIN";
+    #    $rcode = "NXDOMAIN";
     #}
 
     # mark the answer as authoritative (by setting the 'aa' flag)
@@ -122,5 +124,5 @@ sub reply_handler {
     return ($rcode, \@ans, \@auth, \@add, $headermask, $optionmask);
 }
 
-# vim:sw=4:ts=4:sts=4:et:cc=80
+# vim:sw=4:ts=4:sts=4:et:cc=72:tw=70
 # End of file.
