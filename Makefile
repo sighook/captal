@@ -16,7 +16,8 @@ RCS     = $(subst .in,,$(wildcard rc/*.in))
 all: ${HELPERS} ${CONFIGS} ${RCS}
 
 %: %.in
-	sed -e "s|@ETCDIR@|${ETCDIR}|g" \
+	sed -e "s|@BINDIR@|${BINDIR}|g" \
+	    -e "s|@ETCDIR@|${ETCDIR}|g" \
 	    -e "s|@RCDIR@|${RCDIR}|g"   \
 	    -e "s|@WWWDIR@|${WWWDIR}|g" \
 	    $<  >  $@
