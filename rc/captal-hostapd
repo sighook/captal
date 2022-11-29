@@ -1,31 +1,36 @@
 #!/bin/sh
+#
+# @RCDIR@/captal-hostapd: roque AP configuration
+#
+
 PATH="/sbin:/usr/sbin:/bin:/usr/bin"
 
-NAME="hostapd"
+NAME="captal-hostapd"
 USER="root"
-RUNDIR="/var/run/$NAME"
-PIDFILE="/var/run/$NAME.pid"
-CONFIG="/etc/captal/hostapd.conf"
+RUNDIR="/run/$NAME"
+PID="/run/$NAME.pid"
+CONF="@ETCDIR@/captal/hostapd.conf"
 PROG="/usr/sbin/hostapd"
-ARGS="-B -P $PIDFILE $CONFIG"
+OPTS="-B -P $PID $CONF"
 
 case $1 in
 start)
 	install -d -m 755 -o $USER $RUNDIR || exit 1
-	start-stop-daemon --start --pidfile $PIDFILE --exec $PROG -- $ARGS
+	start-stop-daemon --start --pidfile $PID --exec $PROG -- $OPTS
 	;;
 stop)
-	start-stop-daemon --stop --retry 60 --pidfile $PIDFILE --remove-pidfile
+	start-stop-daemon --stop --pidfile $PID --remove-pidfile \
+		--retry 60
 	;;
 restart)
 	$0 stop
 	$0 start
 	;;
 status)
-	start-stop-daemon --status --pidfile $PIDFILE
+	start-stop-daemon --status --pidfile $PID
 	case $? in
-	0) echo "$PROG running with pid: $(cat $PIDFILE)" ;;
-	1) echo "$PROG not running, stale pidfile: $PIDFILE" ;;
+	0) echo "$PROG running with pid: $(cat $PID)" ;;
+	1) echo "$PROG not running, stale pidfile: $PID" ;;
 	3) echo "$PROG not running" ;;
 	4) echo "Unable to determine program status" ;;
 	esac
@@ -35,4 +40,5 @@ status)
 	;;
 esac
 
-# End of file
+# vim:cc=72:tw=70
+# End of file.
