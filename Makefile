@@ -16,10 +16,10 @@ RCS     = $(subst .in,,$(wildcard rc/*.in))
 all: ${HELPERS} ${CONFIGS} ${RCS}
 
 %: %.in
-	sed -i  -e "s/@ETCDIR@/${ETCDIR}/g" \
-		-e "s/@RCDIR@/${RCDIR}/g"   \
-		-e "s/@WWWDIR@/${WWWDIR}/g" \
-		$<  >  $@
+	sed -e "s|@ETCDIR@|${ETCDIR}|g" \
+	    -e "s|@RCDIR@|${RCDIR}|g"   \
+	    -e "s|@WWWDIR@|${WWWDIR}|g" \
+	    $<  >  $@
 
 install:
 	install -m 0755 -Dt ${DESTDIR}${BINDIR}/        ${HELPERS}
@@ -42,7 +42,7 @@ uninstall:
 clean:
 	rm -f ${HELPERS} ${CONFIGS} ${RCS}
 
-.PHONY: all install uninstall
+.PHONY: all install uninstall clean
 
 # vim:cc=72:tw=70
 # End of file.
