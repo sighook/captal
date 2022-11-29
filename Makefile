@@ -1,50 +1,41 @@
-# captal - Captive Portal
+# This file is part of captal.
 # See LICENSE file for copyright and license details.
+
+# paths
+PREFIX = /usr/local
+BINDIR = ${PREFIX}/bin
+ETCDIR = /etc
+RCDIR  = /etc/rc.d
+WWWDIR = /var/www
 
 all:
 
+BINS = $(shell ls -1 bin/*)
+CFGS = $(shell ls -1 cfg/*)
+RCS  = $(shell ls -1 rc/* )
+
 install:
 	# binaries
-	install -d $(DESTDIR)/usr/bin
-	install -m755 bin/captal-chkwpa  -t $(DESTDIR)/usr/bin
-	install -m755 bin/captal-dnsserv -t $(DESTDIR)/usr/bin
-	install -m755 bin/captal-gencert -t $(DESTDIR)/usr/bin
+	install -m 0755 -Dt ${DESTDIR}${BINDIR}/ ${BINS}
 	# configs
-	install -d $(DESTDIR)/etc/captal
-	install -m644 cfg/chkwpa.conf    -t $(DESTDIR)/etc/captal
-	install -m644 cfg/dhcpd.conf     -t $(DESTDIR)/etc/captal
-	install -m644 cfg/dhcpd.leases   -t $(DESTDIR)/etc/captal
-	install -m644 cfg/hostapd.conf   -t $(DESTDIR)/etc/captal
-	install -m644 cfg/lighttpd.conf  -t $(DESTDIR)/etc/captal
-	# rc
-	install -d $(DESTDIR)/etc/rc.d
-	install -m755 rc/captal          -t $(DESTDIR)/etc/rc.d
-	install -m755 rc/captal-airbase  -t $(DESTDIR)/etc/rc.d
-	install -m755 rc/captal-dhcpd    -t $(DESTDIR)/etc/rc.d
-	install -m755 rc/captal-dnsserv  -t $(DESTDIR)/etc/rc.d
-	install -m755 rc/captal-hostapd  -t $(DESTDIR)/etc/rc.d
-	install -m755 rc/captal-lighttpd -t $(DESTDIR)/etc/rc.d
-	install -m755 rc/captal-prepare  -t $(DESTDIR)/etc/rc.d
+	install -m 0644 -Dt ${DESTDIR}${ETCDIR}/captal ${CFGS}
+	# rc files
+	install -m 0755 -Dt ${DESTDIR}${RCDIR}/ ${RCS}
 	# sites
-	install -d $(DESTDIR)/var/www/captal/sites
-	cp -a sites/* $(DESTDIR)/var/www/captal/sites
+	install -d ${DESTDIR}${WWWDIR}/captal/sites
+	cp -a sites/* ${DESTDIR}${WWWDIR}/captal/sites/
 
 uninstall:
 	# binaries
-	rm -f  $(DESTDIR)/usr/bin/captal-chkwpa
-	rm -f  $(DESTDIR)/usr/bin/captal-dnsserv
-	rm -r  $(DESTDIR)/usr/bin/captal-gencert
+	rm -f  ${DESTDIR}${BINDIR}/captal-*
 	# configs
-	rm -rf $(DESTDIR)/etc/captal
+	rm -rf ${DESTDIR}${ETCDIR}/captal/
 	# rc
-	rm -f  $(DESTDIR)/etc/rc.d/captal
-	rm -f  $(DESTDIR)/etc/rc.d/captal-airbase
-	rm -f  $(DESTDIR)/etc/rc.d/captal-dhcpd
-	rm -f  $(DESTDIR)/etc/rc.d/captal-dnsserv
-	rm -f  $(DESTDIR)/etc/rc.d/captal-hostapd
-	rm -f  $(DESTDIR)/etc/rc.d/captal-lighttpd
-	rm -f  $(DESTDIR)/etc/rc.d/captal-prepare
+	rm -f  ${DESTDIR}${RCDIR}/captal*
 	# sites
-	rm -rf $(DESTDIR)/var/www/captal
+	rm -rf ${DESTDIR}${WWWDIR}/captal/
 	
 .PHONY: all install uninstall
+
+# vim:cc=72:tw=70
+# End of file.
