@@ -1,20 +1,24 @@
 #!/bin/sh
 
-[ "`id -u`" = 0 ] || {
-	echo "This script requires root privileges.";
-	exit 1
-}
+if [ "$(id -u)" != 0 ]; then
+  echo "${0##*}: This script requires root privileges" >/dev/stderr
+  exit 1
+fi
+
+(cd /etc/captal || exit 1
 
 echo "Generating Self-Signed SSL Certificate"
-
-(cd /etc/captal
 openssl req \
-	-subj "/CN=captive.gateway.lan/O=CaptivePortal/OU=Networking/C=US" \
-	-new \
-	-newkey rsa:2048 \
-	-days 365 \
-	-nodes \
-	-x509 \
-	-keyout server.pem \
-	-out server.pem
+  -subj "/CN=captive.gateway.lan/O=CaptivePortal/OU=Networking/C=US" \
+  -new \
+  -newkey rsa:2048 \
+  -days 365 \
+  -nodes \
+  -x509 \
+  -keyout server.pem \
+  -out server.pem
+
 chmod 400 server.pem)
+
+# vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+# End of file.
