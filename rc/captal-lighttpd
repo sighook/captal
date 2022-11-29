@@ -1,29 +1,29 @@
 #!/bin/sh
 #
-# /etc/rc.d/captal-lighttpd: start/stop captal's lighttpd daemon
+# @RCDIR@/captal-lighttpd: start/stop captal's lighttpd daemon
 #
 
 SSD=/sbin/start-stop-daemon
 PROG=/usr/sbin/lighttpd
-PIDFILE=/var/run/lighttpd.pid
-OPTS="-f /etc/captal/lighttpd.conf"
+PID=/run/captal-lighttpd.pid
+OPTS="-f @ETCDIR@/captal/lighttpd.conf"
 
 case $1 in
 start)
-	$SSD --start --make-pidfile --pidfile $PIDFILE --exec $PROG -- $OPTS
+	$SSD --start --make-pidfile --pidfile $PID --exec $PROG -- $OPTS
 	;;
 stop)
-	$SSD --stop --remove-pidfile --retry 10 --pidfile $PIDFILE
+	$SSD --stop --remove-pidfile --retry 10 --pidfile $PID
 	;;
 restart)
 	$0 stop
 	$0 start
 	;;
 status)
-	$SSD --status --pidfile $PIDFILE
+	$SSD --status --pidfile $PID
 	case $? in
-	0) echo "$PROG running with pid: $(cat $PIDFILE)" ;;
-	1) echo "$PROG not running, stale pidfile: $PIDFILE" ;;
+	0) echo "$PROG running with pid: $(cat $PID)" ;;
+	1) echo "$PROG not running, stale pidfile: $PID" ;;
 	3) echo "$PROG not running" ;;
 	4) echo "Unable to determine program status" ;;
 	esac
@@ -33,4 +33,5 @@ status)
 	;;
 esac
 
-# End of file
+# vim:cc=72:tw=70
+# End of file.
