@@ -1,12 +1,14 @@
 # captal
+
 (Wireless) (RogueAP) (MITM) (Phishing) attack framework
 
 ### about
 
 captal is a security auditing and social-engineering research project.
 
-The main goal is to provide the modular constructor for MITM-Phishing attacks.
-See [examples](https://github.com/chinarulezzz/captal/#examples) for usage.
+The main goal is to provide the modular constructor for MITM-Phishing
+attacks.
+See [examples](https://github.com/sighook/captal/#examples) for usage.
 
 ### dependencies
 
@@ -38,9 +40,11 @@ See [examples](https://github.com/chinarulezzz/captal/#examples) for usage.
 
 #### utils
 
-- /usr/bin/captal-chkwpa: check phished wpa/wpa2 password against sniffed handshakes
+- /usr/bin/captal-chkwpa: check phished wpa/wpa2 password against
+sniffed handshakes
 - /usr/bin/captal-dnsserver: simple and extendable dns server
-- /usr/bin/captal-gencert: generate self-signed certificate for phishing site
+- /usr/bin/captal-gencert: generate self-signed certificate for
+phishing site
 
 #### logs
 
@@ -51,25 +55,29 @@ See [examples](https://github.com/chinarulezzz/captal/#examples) for usage.
 
 #### phishing portals
 
-- /var/www/captal/sites ([screenshots](https://github.com/chinarulezzz/captal/blob/master/PORTALS.md))
+- /var/www/captal/sites ([screenshots](https://github.com/sighook/captal/blob/master/PORTALS.md))
 
 ---
 
 ### examples
 
-- [Evil Twin MITM Phishing](https://github.com/chinarulezzz/captal/blob/master/doc/EvilTwin_MITM_Phishing.md)
+- [Evil Twin MITM Phishing](https://github.com/sighook/captal/blob/master/doc/EvilTwin_MITM_Phishing.md)
 
 ---
 
 ### HUGE THANKS
 
-- Fluxion Project: [](https://github.com/FluxionNetwork/fluxion)
+- [Fluxion Project](https://github.com/FluxionNetwork/fluxion)
 
-- AdvPhising Project: [](https://github.com/Ignitetch/AdvPhishing)
+- [AdvPhising Project](https://github.com/Ignitetch/AdvPhishing)
 
 ---
 
 ### LEGAL DISCLAIMER
 
-The author does not hold any responsibility for the bad use of this tool,
-remember that attacking targets without prior consent is illegal and punished by law.
+The author does not hold any responsibility for the bad use of this
+tool, remember that attacking targets without prior consent is illegal
+and punished by law.
+
+<!-- vim:sw=2:ts=2:sts=2:et:cc=72:tw=70
+End of file. -->
