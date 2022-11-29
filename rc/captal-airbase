@@ -1,5 +1,5 @@
 #
-# @ETCDIR@/rc.d/airbase-ng: start/stop airbase-ng Roque AP
+# @RCDIR@/airbase-ng: start/stop airbase-ng Roque AP
 #
 
 . @ETCDIR@/captal/airbase.conf
