@@ -46,7 +46,7 @@ $opt_a //= '192.168.254.1';
 $opt_p //= 53;
 $opt_R //= '192.168.254.1';
 
-print "$help\n" and exit if $opt_h;
+print "$help\n"    and exit if $opt_h;
 print "$version\n" and exit if $opt_v;
 
 if ($opt_p && $opt_p < 1024 && $> != 0) {
@@ -64,7 +64,7 @@ my $ns = Net::DNS::Nameserver->new(
     LocalPort    => $opt_p,
     ReplyHandler => \&reply_handler,
     Verbose      => 1
-    ) || die "$program: Couldn't create nameserver object!\n";
+    ) or die "$program: Couldn't create nameserver object!\n";
 
 openlog($program, 'cons,pid', 'user');
 syslog('info', "Starting at $opt_a:$opt_p\n");
@@ -123,4 +123,4 @@ sub reply_handler {
 }
 
 # vim:sw=4:ts=4:sts=4:et:cc=80
-# End of file
+# End of file.
